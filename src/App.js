@@ -21,7 +21,7 @@ function App() {
   axios.get('https://pizzeria-backend-xbfp.onrender.com/api/check-session', { withCredentials: true })
     .then(res => {
       if (res.data.loggedIn) {
-        setLoggedInUser(res.data.user);
+        setLoggedInUser(res.data.username);
       }
     })
     .catch(err => {
