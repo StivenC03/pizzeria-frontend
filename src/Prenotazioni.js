@@ -68,7 +68,7 @@ function Prenotazioni({ loggedInUser }) {
   };
 
   if (!loggedInUser) {
-    return <h2 style={{color: 'white', textAlign: 'center', marginTop: '50px'}}>Devi effettuare il login per vedere questa pagina.</h2>;
+    return <h2 style={{color: 'black', textAlign: 'center', marginTop: '50px'}}>Devi effettuare il login per vedere questa pagina.</h2>;
   }
 
   return (

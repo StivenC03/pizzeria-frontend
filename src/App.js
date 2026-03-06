@@ -17,14 +17,18 @@ function App() {
 
   // Al caricamento, chiediamo al server se abbiamo un cookie valido
   useEffect(() => {
-    axios.get('https://pizzeria-backend-xbfp.onrender.com/api/check-session', { withCredentials: true })
-      .then(response => {
-        if (response.data.loggedIn) {
-          setLoggedInUser(response.data.username);
-        }
-      })
-      .catch(error => console.error("Errore controllo sessione:", error));
-  }, []);
+  // Cambia l'URL con il tuo link di Render
+  axios.get('https://pizzeria-backend-xbfp.onrender.com/api/check-session', { withCredentials: true })
+    .then(res => {
+      if (res.data.loggedIn) {
+        setLoggedInUser(res.data.user);
+      }
+    })
+    .catch(err => {
+      console.log("Nessuna sessione attiva");
+      setLoggedInUser(null);
+    });
+}, []);
 
   const handleLogout = () => {
     // Chiamiamo l'API di logout per distruggere il cookie nel backend
