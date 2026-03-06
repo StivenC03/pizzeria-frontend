@@ -174,3 +174,45 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+/* --- REGOLE PER SMARTPHONE (Schermi sotto i 768px) --- */
+@media (max-width: 768px) {
+  
+  /* 1. Il Menu: invece di 3 o 4 pizze per riga, ne mettiamo 1 sola */
+  .menu-grid {
+    grid-template-columns: 1fr !important; /* Forza una colonna sola */
+    gap: 15px;
+    padding: 10px;
+  }
+
+  /* 2. La Navbar: i link diventano uno sotto l'altro o più piccoli */
+  nav {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+  
+  nav a {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+
+  /* 3. Testi e Titoli: riduciamo la dimensione per non farli andare a capo male */
+  h1 {
+    font-size: 24px;
+  }
+
+  /* 4. Il Form delle prenotazioni: lo allarghiamo a tutto schermo */
+  .form-container, .login-container {
+    width: 90% !important;
+    margin: 10px auto;
+    padding: 15px;
+  }
+
+  /* 5. Immagini delle pizze: assicuriamoci che non escano fuori */
+  .pizza-card img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+  }
+}
