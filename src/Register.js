@@ -9,7 +9,7 @@ function Register() {
   const handleRegister = (e) => {
     e.preventDefault();
     
-    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/register', { username, password })
+    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/register', { username, password }, { withCredentials: true })
       .then(response => {
         setMessage(response.data.message);
         setUsername('');

@@ -11,7 +11,7 @@ function Login({ setLoggedInUser }) {
   const handleLogin = (e) => {
     e.preventDefault();
     
-    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/login', { username, password })
+    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/login', { username, password }, { withCredentials: true })
       .then(response => {
         setMessage(response.data.message);
         

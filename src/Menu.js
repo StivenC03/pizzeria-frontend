@@ -5,7 +5,7 @@ function Menu() {
   const [menu, setMenu] = useState([]);
 
   useEffect(() => {
-    axios.get('https://pizzeria-backend-xbfp.onrender.com/api/menu')
+    axios.get('https://pizzeria-backend-xbfp.onrender.com/api/menu', { withCredentials: true })
       .then(response => {
         setMenu(response.data);
       })

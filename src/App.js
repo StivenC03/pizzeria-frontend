@@ -17,7 +17,7 @@ function App() {
 
   // Al caricamento, chiediamo al server se abbiamo un cookie valido
   useEffect(() => {
-    axios.get('https://pizzeria-backend-xbfp.onrender.com/api/check-session')
+    axios.get('https://pizzeria-backend-xbfp.onrender.com/api/check-session', { withCredentials: true })
       .then(response => {
         if (response.data.loggedIn) {
           setLoggedInUser(response.data.username);
@@ -28,7 +28,7 @@ function App() {
 
   const handleLogout = () => {
     // Chiamiamo l'API di logout per distruggere il cookie nel backend
-    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/logout')
+    axios.post('https://pizzeria-backend-xbfp.onrender.com/api/logout', { withCredentials: true })
       .then(() => {
         setLoggedInUser(null);
         window.location.href = '/login';

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// 1. DEFINISCI QUI IL TUO LINK DI RENDER (UNA VOLTA SOLA PER TUTTI)
+const API_URL = "https://pizzeria-backend-xbfp.onrender.com"; 
+
 function Prenotazioni({ loggedInUser }) {
   const [prenotazioni, setPrenotazioni] = useState([]);
   const [data, setData] = useState('');
-  const [orario, setOrario] = useState('20:00'); // Impostiamo le 20:00 come default
+  const [orario, setOrario] = useState('20:00');
   const [persone, setPersone] = useState('');
-  
-  // Stati per messaggi di successo ed errore separati
   const [message, setMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
   const dataDiOggi = new Date().toISOString().split('T')[0];
 
+  // AGGIUNTO: withCredentials per mantenere il login
   const fetchPrenotazioni = () => {
     if (loggedInUser) {
-      axios.get(`http://localhost:3001/api/prenotazioni/${loggedInUser}`)
+      axios.get(`${API_URL}/api/prenotazioni/${loggedInUser}`, { withCredentials: true })
         .then(response => setPrenotazioni(response.data))
         .catch(error => console.error("Errore recupero prenotazioni:", error));
     }
@@ -31,26 +33,25 @@ function Prenotazioni({ loggedInUser }) {
     setMessage('');
     setErrorMsg('');
     
-    axios.post('http://localhost:3001/api/prenotazioni', {
+    // AGGIUNTO: withCredentials e URL corretto
+    axios.post(`${API_URL}/api/prenotazioni`, {
       username: loggedInUser,
       data: data,
       orario: orario,
       persone: persone
-    })
+    }, { withCredentials: true })
     .then(response => {
       setMessage(response.data.message);
       setData('');
-      setOrario('20:00'); // Resetta l'orario
+      setOrario('20:00');
       setPersone('');
       fetchPrenotazioni();
-      
       setTimeout(() => setMessage(''), 3000); 
     })
     .catch(error => {
-      // Gestiamo l'errore che ci manda il backend (es. doppia prenotazione)
       if (error.response) {
         setErrorMsg(error.response.data.message);
-        setTimeout(() => setErrorMsg(''), 4000); // Fa sparire l'errore dopo 4 secondi
+        setTimeout(() => setErrorMsg(''), 4000);
       } else {
         setErrorMsg("Errore durante la connessione al server");
       }
@@ -58,7 +59,8 @@ function Prenotazioni({ loggedInUser }) {
   };
 
   const handleCancella = (id) => {
-    axios.delete(`https://pizzeria-backend-xbfp.onrender.com/api/prenotazioni/${id}`)
+    // AGGIUNTO: withCredentials e URL corretto
+    axios.delete(`${API_URL}/api/prenotazioni/${id}`, { withCredentials: true })
       .then(response => {
         fetchPrenotazioni(); 
       })
@@ -66,11 +68,11 @@ function Prenotazioni({ loggedInUser }) {
   };
 
   if (!loggedInUser) {
-    return <h2>Devi effettuare il login per vedere questa pagina.</h2>;
+    return <h2 style={{color: 'white', textAlign: 'center', marginTop: '50px'}}>Devi effettuare il login per vedere questa pagina.</h2>;
   }
 
   return (
-    <div>
+    <div className="container">
       <h2>Benvenuto/a, {loggedInUser}!</h2>
       <p>Gestisci qui le tue prenotazioni.</p>
       
@@ -90,7 +92,7 @@ function Prenotazioni({ loggedInUser }) {
           </div>
 
           <div className="form-group">
-            <label>Fascia Oraria (Turni di 1 ora): </label>
+            <label>Fascia Oraria: </label>
             <select 
               value={orario} 
               onChange={(e) => setOrario(e.target.value)} 
@@ -120,7 +122,6 @@ function Prenotazioni({ loggedInUser }) {
           <button type="submit" className="btn">Prenota Tavolo</button>
         </form>
 
-        {/* Messaggi di esito dinamici */}
         {message && <p style={{ color: 'green', marginTop: '15px', fontWeight: 'bold' }}>{message}</p>}
         {errorMsg && <p style={{ color: '#d32f2f', marginTop: '15px', fontWeight: 'bold' }}>{errorMsg}</p>}
       </div>
