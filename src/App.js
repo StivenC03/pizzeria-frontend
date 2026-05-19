@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 
-// Import Stili
+
 import './styles/App.css'; 
 
-// Import Componenti
+
 import Navbar from './components/Navbar';
 
-// Import Pagine
+
 import Home from './pages/Home';
 import Menu from './pages/Menu';
 import Login from './pages/Login';
@@ -39,7 +39,7 @@ function App() {
   return (
     <Router>
       <div>
-        {/* Usiamo il nuovo componente Navbar */}
+        
         <Navbar loggedInUser={loggedInUser} handleLogout={handleLogout} />
         
         <div className="container">

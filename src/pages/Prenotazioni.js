@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-// 1. DEFINISCI QUI IL TUO LINK DI RENDER (UNA VOLTA SOLA PER TUTTI)
+
 const API_URL = "https://pizzeria-backend-xbfp.onrender.com"; 
 
 function Prenotazioni({ loggedInUser }) {
@@ -14,7 +14,7 @@ function Prenotazioni({ loggedInUser }) {
 
   const dataDiOggi = new Date().toISOString().split('T')[0];
 
-  // AGGIUNTO: withCredentials per mantenere il login
+
   const fetchPrenotazioni = () => {
     if (loggedInUser) {
       axios.get(`${API_URL}/api/prenotazioni/${loggedInUser}`, { withCredentials: true })
@@ -25,7 +25,7 @@ function Prenotazioni({ loggedInUser }) {
 
   useEffect(() => {
     fetchPrenotazioni();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, [loggedInUser]);
 
   const handlePrenota = (e) => {
@@ -33,7 +33,7 @@ function Prenotazioni({ loggedInUser }) {
     setMessage('');
     setErrorMsg('');
     
-    // AGGIUNTO: withCredentials e URL corretto
+
     axios.post(`${API_URL}/api/prenotazioni`, {
       username: loggedInUser,
       data: data,
@@ -59,7 +59,7 @@ function Prenotazioni({ loggedInUser }) {
   };
 
   const handleCancella = (id) => {
-    // AGGIUNTO: withCredentials e URL corretto
+
     axios.delete(`${API_URL}/api/prenotazioni/${id}`, { withCredentials: true })
       .then(response => {
         fetchPrenotazioni(); 
