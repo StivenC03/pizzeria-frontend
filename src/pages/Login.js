@@ -16,7 +16,7 @@ function Login({ setLoggedInUser }) {
         setMessage(response.data.message);
         
         if (response.data.success) {
-          // Rimosso localStorage! Ora fa tutto il cookie in automatico
+          
           setLoggedInUser(response.data.username);
           
           setTimeout(() => {

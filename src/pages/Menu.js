@@ -12,7 +12,6 @@ function Menu() {
       .catch(error => console.error("Errore nel recupero del menu:", error));
   }, []);
 
-  // Separiamo i prodotti in base alla loro categoria
   const pizze = menu.filter(item => item.categoria === 'Pizze');
   const antipasti = menu.filter(item => item.categoria === 'Antipasti');
   const bevande = menu.filter(item => item.categoria === 'Bevande');
@@ -21,7 +20,7 @@ function Menu() {
     <div>
       <h2 style={{ textAlign: 'center', color: '#333', fontSize: '2em' }}>Cosa vuoi mangiare oggi?</h2>
       
-      {/* SEZIONE PIZZE (Con Immagini) */}
+      
       <h3 className="categoria-titolo">🍕 Pizze Cotte a Legna</h3>
       <div className="menu-grid">
         {pizze.map(pizza => (
@@ -36,7 +35,7 @@ function Menu() {
         ))}
       </div>
 
-      {/* SEZIONE ANTIPASTI */}
+      
       <h3 className="categoria-titolo">🍟 Fritti e Antipasti</h3>
       <ul className="menu-list">
         {antipasti.map(item => (
@@ -50,7 +49,7 @@ function Menu() {
         ))}
       </ul>
 
-      {/* SEZIONE BEVANDE */}
+      
       <h3 className="categoria-titolo">🥤 Bevande</h3>
       <ul className="menu-list">
         {bevande.map(item => (
