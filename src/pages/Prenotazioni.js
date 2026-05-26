@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import io from 'socket.io-client';
 
 const API_URL = "https://pizzeria-backend-xbfp.onrender.com"; 
+const socket = io(API_URL);
 
 function Prenotazioni({ loggedInUser }) {
   const [prenotazioni, setPrenotazioni] = useState([]);
@@ -11,6 +12,7 @@ function Prenotazioni({ loggedInUser }) {
   const [persone, setPersone] = useState('');
   const [message, setMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [postiRimanenti, setPostiRimanenti] = useState(null);
 
   const dataDiOggi = new Date().toISOString().split('T')[0];
 
@@ -18,21 +20,45 @@ function Prenotazioni({ loggedInUser }) {
     if (loggedInUser) {
       axios.get(`${API_URL}/api/prenotazioni/${loggedInUser}`, { withCredentials: true })
         .then(response => setPrenotazioni(response.data))
-        .catch(error => console.error("Errore recupero prenotazioni:", error));
+        .catch(error => console.error(error));
+    }
+  };
+
+  const controllaDisponibilita = () => {
+    if (data && orario) {
+      axios.get(`${API_URL}/api/prenotazioni/disponibilita/${data}/${orario}`, { withCredentials: true })
+        .then(response => setPostiRimanenti(response.data.postiRimanenti))
+        .catch(error => console.error(error));
+    } else {
+      setPostiRimanenti(null);
     }
   };
 
   useEffect(() => {
     fetchPrenotazioni();
-   
   }, [loggedInUser]);
+
+  useEffect(() => {
+    controllaDisponibilita();
+  }, [data, orario]);
+
+  useEffect(() => {
+    socket.on('aggiornamento-posti', (datiModificati) => {
+      if (datiModificati.data === data && datiModificati.orario === orario) {
+        controllaDisponibilita();
+      }
+    });
+
+    return () => {
+      socket.off('aggiornamento-posti');
+    };
+  }, [data, orario]);
 
   const handlePrenota = (e) => {
     e.preventDefault();
     setMessage('');
     setErrorMsg('');
     
-  
     axios.post(`${API_URL}/api/prenotazioni`, {
       username: loggedInUser,
       data: data,
@@ -58,12 +84,11 @@ function Prenotazioni({ loggedInUser }) {
   };
 
   const handleCancella = (id) => {
-    
     axios.delete(`${API_URL}/api/prenotazioni/${id}`, { withCredentials: true })
-      .then(response => {
+      .then(() => {
         fetchPrenotazioni(); 
       })
-      .catch(error => console.error("Errore cancellazione:", error));
+      .catch(error => console.error(error));
   };
 
   if (!loggedInUser) {
@@ -107,19 +132,26 @@ function Prenotazioni({ loggedInUser }) {
             </select>
           </div>
 
+          {postiRimanenti !== null && data !== '' && (
+            <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: postiRimanenti > 0 ? '#e8f5e9' : '#ffebee', border: `1px solid ${postiRimanenti > 0 ? '#4caf50' : '#f44336'}`, borderRadius: '4px', color: postiRimanenti > 0 ? '#2e7d32' : '#c62828', fontWeight: 'bold' }}>
+              {postiRimanenti > 0 ? `Posti disponibili in questa fascia: ${postiRimanenti}` : 'Fascia oraria esaurita'}
+            </div>
+          )}
+
           <div className="form-group">
             <label>Numero di persone: </label>
             <input 
               type="number" 
               min="1" 
-              max="20" 
+              max={postiRimanenti !== null ? postiRimanenti : 20}
               value={persone} 
               onChange={(e) => setPersone(e.target.value)} 
               required 
+              disabled={postiRimanenti === 0}
             />
           </div>
           
-          <button type="submit" className="btn">Prenota Tavolo</button>
+          <button type="submit" className="btn" disabled={postiRimanenti === 0 || postiRimanenti === null}>Prenota Tavolo</button>
         </form>
 
         {message && <p style={{ color: 'green', marginTop: '15px', fontWeight: 'bold' }}>{message}</p>}
